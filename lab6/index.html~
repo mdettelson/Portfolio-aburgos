@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+ <title>Messages</title>
+ <script>
+ // Create instance of XHR object
+ xhr = new XMLHttpRequest();
+
+ xhr.open("get", "http://messagehub.herokuapp.com/messages.json", true);
+
+ // Set up handler for the response
+ xhr.onreadystatechange = function() {
+ if (xhr.readyState == 4 && xhr.status == 200) {
+ alert("Got data back!");
+ data = xhr.responseText;
+ document.getElementById("list").innerHTML = data;
+ }
+ };
+
+
+ xhr.send();
+ </script>
+</head>
+
+<body>
+ <h1>Messages</h1>
+ <div id="list">Nothing to show...</div>
+</body>
+</html>
