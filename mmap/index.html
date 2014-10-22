@@ -40,6 +40,7 @@
         }
 
         function getRequest(){
+              
                
                http.open("POST","http://chickenofthesea.herokuapp.com/sendLocation", true);
                http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -48,7 +49,7 @@
                   
         }
 
-        function renderMap(obj)
+        function renderMap()
         {
                
                 me = new google.maps.LatLng(myLat, myLng);
@@ -62,19 +63,23 @@
                         title: "NevilleLongbottom",
                         icon: myImg
                 });
-     
+                var info = marker.title + " Distance = 0" + " Location = " + me;
+                bindInfoWindow(marker, map, infowindow, info);
+            
              
  
-                marker.setMap(map);
-             
-               
-                      
-       
-
-              
+                
         }
 
         function dataReady(){
+               if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                                 myLat = position.coords.latitude;
+                                 myLng = position.coords.longitude;
+                                 renderMap();
+                                
+                         });
+               }
 	       if(http.readyState == 4){
 		
                         obj = JSON.parse(http.responseText);
@@ -85,18 +90,20 @@
                         student_created = accessCreated(obj);
                         for( var i = 0; i < obj['students'].length; i++){
                                  student = new google.maps.LatLng(student_lat[i], student_lng[i]);
-                                
+                                 stdLat = student_lat[i];
+                                 stdLng = student_lng[i];
+
                                  var marker1 = new google.maps.Marker({
                                            map: map,
                                            animation: google.maps.Animation.BOUNCE,
                                            position: student,
                                            title:student_names[i]+" "+ student_created[i],
                                  });
-                                  
-                                 google.maps.event.addListener(marker1, 'click', function() {
-                                           infowindow.setContent(marker1.title + " Location = " + student);
-                                           infowindow.open(map, marker1);
-                                 });
+                                 var dist = getDistance(stdLat, stdLng);
+                                 var content = marker1.title + " Distance = " + dist + " Location = " + student;
+                                 bindInfoWindow(marker1, map, infowindow, content);
+                                 createLine(stdLat, stdLng);
+                                
                         }
 
                         char_name = accessCharName(obj);
@@ -106,34 +113,91 @@
                         
                         for( var j = 0; j < obj['characters'].length; j++){
                                  character = new google.maps.LatLng(char_lat[j], char_lng[j]);
-                               
+                                 charLat = char_lat[j];
+                                 charLng = char_lng[j];
                                  
                                  var marker2 = new google.maps.Marker({
                                            map: map,
+                                           animation: google.maps.Animation.BOUNCE,
                                            icon: char_name[j] + ".png",
                                            position: character,
                                            title: char_name[j] + " " + char_note[j]
                                  });
-                                 google.maps.event.addListener(marker2, 'click', function() {
-                                           infowindow.setContent(marker2.title);
-                                           infowindow.open(map, marker2);
-                                 });
-               }  
-                         }
-                                                                                                    
-	           
-               if (navigator.geolocation) {
-                       navigator.geolocation.getCurrentPosition(function(position) {
-                             myLat = position.coords.latitude;
-                             myLng = position.coords.longitude;
-                             renderMap(obj);
-                       });
+                                 distance = getDistance(charLat, charLng);
+                                 var contents = marker2.title + " Distance = " + distance + " Location = " + character;
+                                 bindInfoWindow(marker2, map, infowindow, contents);
+                                 createLine(charLat, charLng);
+                        }  
                }
+               
+                                                                                       
+	           
+             
                    
         }         
-         
- 
 
+        function bindInfoWindow(marker, map, infowindow, contents) {
+               google.maps.event.addListener(marker, 'click', function() {
+                      infowindow.setContent(contents);
+                      infowindow.open(map, marker);
+               });
+        } 
+
+        function createLine(lat, lng)
+        {
+                    
+               var lat2 = lat;
+               var lng2 = lng;
+               var lat1 = 42.387597;
+               var lng1 = -71.09949699999999;
+               console.log(myLat);
+ 
+               var coords = [
+                     new google.maps.LatLng(lat2, lng2),
+                     new google.maps.LatLng(lat1, lng1) 
+               ];
+        
+               var line = new google.maps.Polyline({
+                     path: coords ,
+                     geodesic: true,
+                     strokeColor: '#FF0000',
+                     strokeOpacity: 1.0,
+                     strokeWeight: 2
+               });
+         
+               line.setMap(map);
+         }
+
+        function getDistance(lat, lng)
+        {
+
+              Number.prototype.toRad = function() {
+              return this * Math.PI / 180;
+              }    
+
+              var lat2 = lat; 
+              var lon2 = lng; 
+              var lat1 = myLat; 
+              var lon1 = myLng; 
+
+              var R = 6371; // km 
+
+              var x1 = lat2-lat1;
+              var dLat = x1.toRad();  
+              var x2 = lon2-lon1;
+              var dLon = x2.toRad();  
+              
+              var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+              Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+              Math.sin(dLon/2) * Math.sin(dLon/2);  
+
+              var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+              var d = R * c; 
+              return d;
+
+                 
+ 
+        }
         function accessLng(obj)
         {
             var lng_array = [];
@@ -214,7 +278,7 @@
                 char_array[i] = obj['characters'][i]['name'];
                 
             }
-            console.log("hi");
+           
             return char_array;
           
       }
