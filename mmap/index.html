@@ -106,7 +106,7 @@
                         
                         for( var j = 0; j < obj['characters'].length; j++){
                                  character = new google.maps.LatLng(char_lat[j], char_lng[j]);
-                                 var charMark = [];
+                               
                                  
                                  var marker2 = new google.maps.Marker({
                                            map: map,
@@ -114,15 +114,13 @@
                                            position: character,
                                            title: char_name[j] + " " + char_note[j]
                                  });
-                                
-                                 google.maps.event.addListener(charMark[i], 'click', function(){
-                                           infowindow.setContent(marker2.title +" Location = " + character);
-                                           
-                                           infowindow.open(map, charMark[j]);
+                                 google.maps.event.addListener(marker2, 'click', function() {
+                                           infowindow.setContent(marker2.title);
+                                           infowindow.open(map, marker2);
                                  });
+               }  
                          }
-
-               }                                                                                    
+                                                                                                    
 	           
                if (navigator.geolocation) {
                        navigator.geolocation.getCurrentPosition(function(position) {
