@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Daydream Believer</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">Daydream Believer</h1>
+
+<video src="http://www.cs.tufts.edu/comp/20/daydream_believer.webm" id="music_video" controls></video>
+<div id="lyrics">
+</div>
+
+
+<script>
+var vid = document.getElementsByTagName("video")[0];
+var time = document.getElementById("lyrics");
+
+
+
+vid.addEventListener("timeupdate", lyricT, false);
+
+function lyricT (){
+     var vidTime = vid.currentTime.toFixed(2);
+     if( vidTime < 35 ){ addElement();} 
+     else if ( vidTime > 35 && vidTime < 55 ){ addSecond(); }
+     else if ( vidTime > 55 && vidTime < 83 ){ addThird(); }
+     else if ( vidTime > 83 && vidTime < 120 ){ addFourth(); }
+     else if ( vidTime > 127 ){ addFifth(); }
+}
+
+function addElement () {  
+     var currentDiv = document.getElementById("lyrics")
+     currentDiv.innerHTML = "Oh I could hide neath the wings of the bluebird as she sings. The six o'clock alarm would never ring. But it rings and I rise, Wipe the sleep out of my eyes. My shavin razors cold and it sting";
+     var img = document.createElement("img");
+     img.src = "funny-bears-doing-human-things-1.jpg";
+     addImage(img);
+}
+
+function addImage(img){
+     var image = document.createElement("img");
+     image.src = img.src;
+     var div = document.getElementById("lyrics");
+     div.appendChild(image);
+
+}
+
+function addSecond(){
+    var currentDiv = document.getElementById("lyrics");
+    currentDiv.innerHTML = "Cheer up, Sleepy Jean. Oh, what can it mean To a daydream believer And a homecoming queen";
+    var img = document.createElement("img");
+    img.src = "funny-bears-doing-human-things-13.jpg";
+    addImage(img);
+}
+
+
+
+function addThird(){
+    var currentDiv = document.getElementById("lyrics");
+    currentDiv.innerHTML = "You once thought of me as a white knight on a steed. Now you know how happy I can be. Oh, and our good times start and end without dollar one to spend. But how much baby do we really need.";
+    var img = document.createElement("img");
+    img.src = "funny-bears-doing-human-things-1.jpg";
+    addImage(img)
+} 
+
+function addFourth(){
+    var currentDiv = document.getElementById("lyrics");
+    currentDiv.innerHTML = "Cheer up. Sleepy Jean. Oh what can it mean. To a daydream believer and a homecoming queen. Cheer up Sleepy Jean. OH what can it mean to a daydream believer and a homecoming queen.";
+    var img = document.createElement("img");
+    img.src = "funny-bears-doing-human-things-13.jpg";
+    addImage(img)
+}
+
+function addFifth(){
+   var currentDiv = document.getElementById("lyrics");
+   currentDiv.innerHTML = "Cheer up, Sleepy Jean. Oh, what can it mean.To a daydream believer And a homecoming queen.[Repeat and fade].";
+   var img = document.createElement("img");
+   img.src = "funny-bears-doing-human-things-1.jpg";
+   addImage(img)
+}
+</script>
+</body>
+</html>	

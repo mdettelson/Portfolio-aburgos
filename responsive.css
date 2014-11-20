@@ -1,0 +1,56 @@
+@media only screen 
+and (min-width : 1281px) {
+ .homer{
+     width: 600px;
+     height: 600px;
+     background: url(homer.jpg);
+    }
+}
+
+@media only screen
+and (min-width :1025px)
+and (max-width :1279px)
+{
+
+    .homer{
+	width:300px;
+	height:300px;
+	background: url(homer.jpg)0 0; 
+    }
+}
+
+@media only screen
+and (min-width :769px)
+and (max-width :1024px)
+{
+    .homer{
+	width:300px;
+	height:300px;
+	background: url(homer.jpg)300px 0; 
+    }
+}
+
+@media only screen
+and (min-width :481px)
+and (max-width :768px)
+{
+    .homer{
+	width:300px;
+	height:300px;
+	background:url(homer.jpg) 0 -300px;
+    }
+}
+
+@media only screen
+and (min-width :0px)
+and (max-width :480px)
+{
+   .homer{
+     width:300px;
+     height:300px;
+     background:url(homer.jpg) 300px -300px;
+}
+}
+    
+
+

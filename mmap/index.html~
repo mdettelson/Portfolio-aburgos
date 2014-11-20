@@ -1,0 +1,157 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+        <title>Lab6</title>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places"></script>
+        <link rel = "stylesheet" href="marauder.css"/>
+
+<script>
+        var myLat = 0;
+        var myLng = 0;
+        var studentLat = 0;
+        var studentLng = 0;
+        var charLat = 0;
+        var charLng = 0;
+
+        http = new XMLHttpRequest();
+        var me = new google.maps.LatLng(myLat, myLng);
+        var myOptions = {
+                zoom: 13,
+                center: me,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map;
+        var marker;
+        var infowindow = new google.maps.InfoWindow();
+        var places;
+
+
+
+       
+        function init(){
+                map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+                getLocation();
+                getRequest();
+        }
+
+     
+         
+        function getLocation(){
+                if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                        myLat = position.coords.latitude;
+                        myLng = position.coords.longitude;
+                        renderMap();
+                        });
+                }
+        }
+        
+
+        function getRequest(){
+               http.open("POST","http://chickenofthesea.herokuapp.com/sendLocation", true);
+               http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	       http.onreadystatechange = function(){
+		      if(http.readyState == 4){
+			     obj = JSON.parse(http.responseText);
+	              }
+                }
+					    ;
+                http.send("login=aburgo02&lat="+ myLat +"&lng="+myLng);
+                console.log (obj['character'][1]['name']);
+               
+             
+        }
+        
+        function accessData(obj){
+        
+            var student_array = [];
+            for (var i = 0; i < obj['students'].length; i++){ 
+                student_list[i] = obj['students'][i]['login'];
+                   
+                }
+            return student_array;
+        
+        }
+        function renderMap(obj)
+        {
+                me = new google.maps.LatLng(myLat, myLng);
+                
+                map.panTo(me);
+
+                var myImg = "";
+                
+                var marker = new google.maps.Marker({
+                        map: map,
+                        position: me,
+                        title: "Andrew Burgos",
+                       
+                });
+                student_array = accessData(obj);
+                
+                for( var i = 0; i < student_list.length; i++){
+                        var stdLat = student_array['students'][i]['lat'];
+                        var stdLng = student_array['students'][i]['lng'];
+                        student = new google.maps.LatLng(stdLat, stdLng);
+                        var marker1 = new google.maps.Marker({
+                            map: map,
+                            position: student,
+                            title: "Students"
+                        });
+                       marker1.setMap(map);
+                }
+ 
+                marker.setMap(map);
+                google.maps.event.addListener(marker, 'click', function() {
+                        infowindow.setContent(marker.title);
+                        infowindow.open(map, marker);
+                });
+                      
+       
+
+              
+        }
+
+        function callback()
+        {                  
+                 places = results;
+                       for (var i = 0; i < results.length; i++) {
+                               createMarker(results[i]);
+                       }
+               
+        }
+
+        function createMarker(place)
+        {
+                var myImg = "";
+                
+                var placeLoc = place.geometry.location;
+                var marker = new google.maps.Marker({
+                        map: map,
+                        position: me,
+                        title: "Andrew Burgos",
+                        icon: myImg
+                });
+                
+                    google.maps.event.addListener(marker, 'click', function(){
+                        infowindow.close();
+                        infowindow.setContent(place.name);
+                        infowindow.open(map, this);
+                    });
+        }
+        
+       
+
+
+</script>
+</head>
+<body onload="init()">
+<div id="map_canvas"></div>
+<div id="textbox"></div>
+</body>

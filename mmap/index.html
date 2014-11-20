@@ -1,0 +1,308 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+        <title>Lab6</title>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true&amp;libraries=places"></script>
+        <link rel = "stylesheet" href="marauder.css"/>
+
+<script>
+        var myLat = 0;
+        var myLng = 0;
+        
+
+        http = new XMLHttpRequest();
+        var me = new google.maps.LatLng(myLat, myLng);
+        var myOptions = {
+                zoom: 13,
+                center: me,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map;
+        var marker;
+        infowindow = new google.maps.InfoWindow();
+        var places;
+
+
+
+       
+        function init(){
+                map = new google.maps.Map(document.getElementById("map_canvas"),myOptions);
+                getRequest();
+                
+               
+        }
+
+        function getRequest(){
+              
+               
+               http.open("POST","http://chickenofthesea.herokuapp.com/sendLocation", true);
+               http.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+               http.send("login=NevilleLongbottom&lat="+ myLat +"&lng="+myLng);
+	       http.onreadystatechange = dataReady;
+                  
+        }
+
+        function renderMap()
+        {
+               
+                me = new google.maps.LatLng(myLat, myLng);
+                map.panTo(me);
+
+                var myImg = "beachflag.png";
+                
+                var marker = new google.maps.Marker({
+                        map: map,
+                        position: me,
+                        title: "NevilleLongbottom",
+                        icon: myImg
+                });
+                var info = marker.title + " Distance = 0" + " Location = " + me;
+                bindInfoWindow(marker, map, infowindow, info);
+            
+             
+ 
+                
+        }
+
+        function dataReady(){
+               if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                                 myLat = position.coords.latitude;
+                                 myLng = position.coords.longitude;
+                                 renderMap();
+                                
+                         });
+               }
+	       if(http.readyState == 4){
+		
+                        obj = JSON.parse(http.responseText);
+                        console.log(obj);
+                        student_names = accessNames(obj);
+                        student_lat = accessLat(obj);
+                        student_lng = accessLng(obj);
+                        student_created = accessCreated(obj);
+                        for( var i = 0; i < obj['students'].length; i++){
+                                 student = new google.maps.LatLng(student_lat[i], student_lng[i]);
+                                 stdLat = student_lat[i];
+                                 stdLng = student_lng[i];
+
+                                 var marker1 = new google.maps.Marker({
+                                           map: map,
+                                           animation: google.maps.Animation.BOUNCE,
+                                           position: student,
+                                           title:student_names[i]+" "+ student_created[i],
+                                 });
+                                 var dist = getDistance(stdLat, stdLng);
+                                 var content = marker1.title + " Distance = " + dist + " Location = " + student;
+                                 bindInfoWindow(marker1, map, infowindow, content);
+                                 createLine(stdLat, stdLng);
+                                
+                        }
+
+                        char_name = accessCharName(obj);
+                        char_lat = accessCharLat(obj);
+                        char_lng = accessCharLng(obj);
+                        char_note = accessCharNote(obj);
+                        
+                        for( var j = 0; j < obj['characters'].length; j++){
+                                 character = new google.maps.LatLng(char_lat[j], char_lng[j]);
+                                 charLat = char_lat[j];
+                                 charLng = char_lng[j];
+                                 
+                                 var marker2 = new google.maps.Marker({
+                                           map: map,
+                                           animation: google.maps.Animation.BOUNCE,
+                                           icon: char_name[j] + ".png",
+                                           position: character,
+                                           title: char_name[j] + " " + char_note[j]
+                                 });
+                                 distance = getDistance(charLat, charLng);
+                                 var contents = marker2.title + " Distance = " + distance + " Location = " + character;
+                                 bindInfoWindow(marker2, map, infowindow, contents);
+                                 createLine(charLat, charLng);
+                        }  
+               }
+               
+                                                                                       
+	           
+             
+                   
+        }         
+
+        function bindInfoWindow(marker, map, infowindow, contents) {
+               google.maps.event.addListener(marker, 'click', function() {
+                      infowindow.setContent(contents);
+                      infowindow.open(map, marker);
+               });
+        } 
+
+        function createLine(lat, lng)
+        {
+                    
+               var lat2 = lat;
+               var lng2 = lng;
+               var lat1 = 42.387597;
+               var lng1 = -71.09949699999999;
+               console.log(myLat);
+ 
+               var coords = [
+                     new google.maps.LatLng(lat2, lng2),
+                     new google.maps.LatLng(lat1, lng1) 
+               ];
+        
+               var line = new google.maps.Polyline({
+                     path: coords ,
+                     geodesic: true,
+                     strokeColor: '#FF0000',
+                     strokeOpacity: 1.0,
+                     strokeWeight: 2
+               });
+         
+               line.setMap(map);
+         }
+
+        function getDistance(lat, lng)
+        {
+
+              Number.prototype.toRad = function() {
+              return this * Math.PI / 180;
+              }    
+
+              var lat2 = lat; 
+              var lon2 = lng; 
+              var lat1 = myLat; 
+              var lon1 = myLng; 
+
+              var R = 6371; // km 
+
+              var x1 = lat2-lat1;
+              var dLat = x1.toRad();  
+              var x2 = lon2-lon1;
+              var dLon = x2.toRad();  
+              
+              var a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+              Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+              Math.sin(dLon/2) * Math.sin(dLon/2);  
+
+              var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+              var d = R * c; 
+              return d;
+
+                 
+ 
+        }
+        function accessLng(obj)
+        {
+            var lng_array = [];
+
+            for (var i = 0; i < obj['students'].length; i++){ 
+                lng_array[i] = obj['students'][i]['lng'];
+                
+            }
+            return lng_array;          
+        
+        }
+
+        function accessLat(obj)
+        {
+            var lat_array = [];
+
+            for (var i = 0; i < obj['students'].length; i++){ 
+                lat_array[i] = obj['students'][i]['lat'];
+                
+            }
+            return lat_array;          
+        
+        }
+
+
+
+
+        
+        function accessCreated(obj)
+        {
+            var created_array = [];
+
+            for (var i = 0; i < obj['students'].length; i++){ 
+                created_array[i] = obj['students'][i]['created_at'];
+                
+            }
+            return created_array;          
+        
+        }
+         
+        function accessNames(obj)
+        {
+        
+            var student_array = [];
+           
+            for (var i = 0; i < obj['students'].length; i++){ 
+                student_array[i] = obj['students'][i]['login'];
+            }         
+            return student_array;
+        
+        }
+      
+       function accessCharLat(obj)
+       {
+            var lat = [];
+            for( var i = 0; i < obj['characters'].length; i++){
+                lat[i] = obj['characters'][i]['loc']['latitude'];
+            }
+            return lat;
+       }
+
+      function accessCharLng(obj)
+      {
+            var lng = [];
+
+            for( var i = 0; i < obj['characters'].length; i++){       
+                lng[i] = obj['characters'][i]['loc']['longitude'];
+            }
+            return lng;
+      }
+
+      function accessCharName(obj)
+      {
+            var char_array = [];
+         
+            for( var i = 0; i < obj['characters'].length; i++){
+          
+                char_array[i] = obj['characters'][i]['name'];
+                
+            }
+           
+            return char_array;
+          
+      }
+    
+      function accessCharNote(obj)
+      {
+           var char_note = [];
+           
+           for( var i = 0; i < obj['characters'].length; i++){
+               char_note[i] = obj['characters'][i]['loc']['note'];
+           }
+
+           return char_note; 
+                  
+      }   
+    
+
+        
+    
+
+
+</script>
+</head>
+<body onload="init()">
+<div id="map_canvas"></div>
+<div id="textbox"></div>
+</body>
