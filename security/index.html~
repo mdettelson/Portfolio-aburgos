@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title> Security </title>
+    
+<p>Author: Andrew Burgos</p>
+<p>Date: 12/2</p>
+
+<p>"Security Report"</p>
+
+<h1>Introduction</h1>
+
+	<p>This report covers the level of security in whereintheworld by Maretta Morovitz for assignment 3. According to the spec designated, Maretta offered a service where users could post their geological location to MongoDB using the express app for Node.js It also offers a map utilizing the Google Maps api where the user can see their own and others location. Although the assignment was completed fully, many security leaks exist.</p>
+
+	<p>One such example is the lack of ability to monitor and supervise the information the users are posting. Having no API key to control who is posting information to the data, the server will always be vulnerable to an excess of erroneous user post data. Because of the lack of ability to control user data that is sent to the server the system has a severe security flaw that needs to be fixed. Additionally lack of surveillance on user input leads to many severe leaks concerning server stability and user information.</p>
+
+<h1>Methodology</h1>
+
+	<p>My first method of testing was black box. I assumed the position of an attacker of the web page and used the resources available to anyone. Listed below are my findings and the leaks I found using the black box method.</p>
+	
+	<p>After black boxing and trying to break the web page I then looked at Maretta's code and tried to think of additional ways I could attack the service.</p> 
+
+<h1>Abstract of Findings</h1>
+	
+	<p>The system relies too much on the assumption that the user is posting correct information. As well as this, erroneous user post information could spam servers and result in a disfunctional google map. Measures need to be taken to monitor user posted information as well introducing a method to limit posted information from a single source.</p> 
+
+<h1>Issues</h1>
+
+<div id = "tags">
+
+	<p>Cross-site scripting</p>
+	
+	<ul>
+		<li>Cross-site scripting proves to be a serious security flaw in Maretta's server design. Cross-site scripting is when an attacker posts data to the server in the form JavaScript that performs an executable. This is a serious flaw because there is no protection from users who choose to post malicious javascript. This issue can be solved by using db.collection.update() where Maretta can escape user input, which is a method of authentication, and translates them to their HTML counterpart where you can compare them to a list of acceptable characters</li>
+		<li>This also can lead to severe breaches in the protection of user information. If an attacker chose to include a JavaScript variable that was a MongoDB query, the attacker could ultimately find any information held in the server without any inhibition. This is because of the method in which Maretta retrieves information from her server. Using a GET function to retrieve information allows any user to do so as well. This can be solved by inspecting user information before executing the access to the data servers. Running variables being input to the server are a vital step in solving the security issues surrounding this server. If Maretta ran the input through an escape function to detect the characters actually being inputted then she could solve the issue of a JavaScript query attack .</li> 
+	</ul>
+		
+	<p>Cross-site HTML</p>
+	
+	<ul>
+
+	  <li>Similar to the example above any user can post data in the form of html. Posted HTML would interfere with the data being posted and the resulting Google map. To rectify this issue do the same as above.</li>
+	
+	</ul>
+	
+	<p>Crash server on invalid JSON</p>
+	
+	<ul>
+	
+	  <li>Invalid user input can lead to a server crash. If the user were to incorrectly input any of the fields in the JSON with characters such as ("",[],{},()) can lead to the server misinterpreting the format of the JSON and cause it to crash. Instead of parsing the data herself, Maretta has the option of directly taking the data array and using express to have the data in JSON format and ready for webpage use.</li> 
+	</ul>
+	<p>Erroneous data posting</p>
+	
+	<ul>
+		<li>Similar to the above security flaws Maretta is too trusting of the data that a user is posting. If a user chooses to post information with hundreds or thousands of characters there is no method to detect this. If erroneous data that can effect server efficiency and performance is allowed to be posted to the server Maretta will run into problems concerning the sustainability of her platform. She can fix this by escaping user information to evaluate what is being input.</li>
+
+		<li>Additionally because user posted data is displayed on the Google map offered by the service there needs to be a way to monitor the amount of data that is allowed to originate from a single source.</li>
+	</ul>
+
+
+	<p>Database creation</p>
+	<ul>
+		<li>Again without surveillance of user input this server will never be safe. If the user posts data containing additional parameters the data base will incorporate the additional parameter into its JSON. One such example is if  Maretta can fix this by creating an object and have it contain the variables lng, lat, etc you can then run the values that the variables hold through a sanitize function which will detect incorrect data posting.</li>
+	</ul>
+
+<p>Cost</p>
+<ul>
+	<li>After evaluating Maretta's system and listing the above implementations that are needed to fix the security of the website I would charge my services at $600. I would then give Gabe $200 for his very helpful and informational report.<li>  
+</ul>	
