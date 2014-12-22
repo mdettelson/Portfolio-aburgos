@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+
+    <title>My News Feed</title>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <script>  
+
+      function getTime(){
+        var time;
+        time = new Date();
+        return time;
+
+      }
+
+      function getText(){
+
+        var text;
+        text = document.getElementById("msg").value;
+        return text;
+        
+ 
+      }
+
+      function dataPair(){
+        var stamp;
+        $("#news").html(localStorage.getItem("time"));
+
+
+        $(document).keypress(function(e) {
+   
+             if(e.which == 13){
+                stamp = getText();
+                var time = getTime();
+                var node = time + " - " + stamp;
+                $("#news").prepend("<p>"+ node +"</p>");
+                localStorage.setItem("time", $("#news").html());
+                document.getElementById("msg").value = "";
+                
+             }  
+      
+        });
+       }
+
+ 
+
+</script>
+</head>
+
+<body>
+<body onload = "dataPair()">
+<h1>My News Feed</h1>
+<h3>My news update: <input type="text" id="msg" name="msg" size="30" /></h3>
+<div id="news"></div>
+</body>
+</html>
