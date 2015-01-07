@@ -35,7 +35,7 @@ app.post("/Project", function(request, response) {
 		"password": password,
 	};
 	db.collection('information', function(er, collection) {
-		var restext = [];
+		var resText = [];
 		var data = [];
 		if (!er){
 			var id = collection.insert(toInsert, function(err, saved) {
@@ -43,7 +43,6 @@ app.post("/Project", function(request, response) {
 			});
 		}
 	});
-}
 /*
 app.get('/information.json', function (request, response) {
 	response.header("Access-Control-Allow-Origin", "*");
