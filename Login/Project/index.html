@@ -1,0 +1,97 @@
+<!doctype html>
+ 
+<html>
+    <head>
+        <meta charset = "utf-8">
+        <meta name = "viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="stylesheets/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="stylesheets/dist/css/footer.css">
+        <title>Login page</title>
+        <script src = "Project/javascripts/js/server.js"></script>
+    </head>
+    <body>
+        
+        <form>
+            <div id ="username">
+                <label>
+                    Login<br />
+                    <input type="text" id="user" name="userid" placeholder="Username"/>
+                </label>
+            </div>
+         
+            <div id ="password">
+                <input type="text" id = "password" name="pswrd" placeholder="Password"/>
+            </div>
+
+            <div id = "button">
+                <input type="button" id ="submit" value="Login"/>
+            </div>
+        </form>
+        
+        <script language="javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+ 
+        <script>
+
+            $(document).ready(function(){
+                $("#submit").click(function(){
+
+                    var user = $("#user").val();
+                    var password = $("#password").val();
+                    console.log(user);
+                    $.post("http://localhost:3000",{user:user,password: password}, function(data){
+                        if(data == "done"){
+                            console.log("success");
+                        }
+                    });
+                });
+            });
+
+            function getUser(){
+                var x = document.getElementById("user").value
+                return x
+            }
+
+            function getPass(){
+                var x = document.getElementById("password").value
+                return x;
+            }
+            
+            function keyPress(){
+                $(document).keypress(function(e){
+                    if(e.which == 13){
+                        var user = $("#user").val();
+                        var pass = $("#password").val();
+                        console.log(user)
+                        $.post("http://localhost:3000", {user:user,password:password}, function(data){
+                            console.log("enter");
+                            if(data == "done"){
+                                console.log("success");
+                            }
+                        });
+                    }
+                });
+            }
+        </script>
+
+    <body onload = "keyPress()">
+    </body>
+    <footer>
+            <div id = "line"></div>
+            <div id = "contact">
+                    <p> Quiet Communities </p>
+                    <p> 555 Medford Ave </p>
+                    <p> Medford, MA, 02155 </p>
+            </div>
+            
+            <div id = "sitemap">
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">Policy</a></li>
+                        <li><a href="#">Suggestions</a></li>
+                    </ul>
+            </div>
+        
+    </footer>
+</html>

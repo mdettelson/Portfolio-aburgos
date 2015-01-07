@@ -1,0 +1,60 @@
+#contact{
+	height: 80px;
+	position: absolute;
+	bottom:-45px;
+	left:0;
+	font-size: 65%;
+}
+#sitemap{
+	height: 80px;
+	position: absolute;
+	bottom: -45px;
+	right: 100px;
+	font-size: 65%;
+}
+h5{
+	font-size:93%;
+	font-style: bold;
+}
+#line{
+	height:1px;
+	position:relative;
+	background:#717171;
+	border-bottom:1px;
+	top: 550px;
+}
+
+#password{
+	right:0;	
+}
+
+#user{
+	right:0;
+}
+
+#username{
+	position:absolute;
+	top:215px;
+	left:1000px;
+	width:775px;
+	height:605px;
+}
+
+#password{
+	position:absolute;
+	top: 140px;
+	left: 500px;
+}
+
+#username label{
+	display:inline;
+	float:left;
+	margin-right:4px;
+	vertical-align:top;
+}
+#button{
+	position:absolute;
+	top:315px;
+	left:1000px;
+
+}
