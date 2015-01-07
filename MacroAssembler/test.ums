@@ -1,0 +1,6 @@
+.temp r7
+r1 := -76
+r3 := -200
+r1 := r1 - r3
+output r1
+halt
